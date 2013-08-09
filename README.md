@@ -1,4 +1,8 @@
-oas_visual.jQuery
-=================
+# oas_visual.jQuery
+
 
 a jQuery plugin for visualisation of aggregated OAS data on a repository page
+
+## License 
+
+Licensed under the MIT license.

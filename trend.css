@@ -1,0 +1,82 @@
+.oas_tendenz_trend_table{
+	text-align:left;
+	font-size:15px;
+	border:2px solid;
+	margin:5px;
+	padding-top:12px;
+	padding-bottom:12px;
+	padding-left:30px;
+	padding-right:30px;
+	border: dotted 1px #DDDDDD;
+	width:98%;
+}
+
+.oas_tendenz_trend_table a{
+	font-size: small;
+}
+
+.oas_tendenz_even:hover{
+	background-image: linear-gradient(bottom, rgb(201,201,201) 19%, rgb(235,235,235) 60%);
+	background-image: -o-linear-gradient(bottom, rgb(201,201,201) 19%, rgb(235,235,235) 60%);
+	background-image: -moz-linear-gradient(bottom, rgb(201,201,201) 19%, rgb(235,235,235) 60%);
+	background-image: -webkit-linear-gradient(bottom, rgb(201,201,201) 19%, rgb(235,235,235) 60%);
+	background-image: -ms-linear-gradient(bottom, rgb(201,201,201) 19%, rgb(235,235,235) 60%); 
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0.19, rgb(201,201,201)),
+		color-stop(0.6, rgb(235,235,235))
+	);
+}
+
+.oas_tendenz_odd:hover{
+	background-image: linear-gradient(bottom, rgb(201,201,201) 19%, rgb(235,235,235) 60%);
+	background-image: -o-linear-gradient(bottom, rgb(201,201,201) 19%, rgb(235,235,235) 60%);
+	background-image: -moz-linear-gradient(bottom, rgb(201,201,201) 19%, rgb(235,235,235) 60%);
+	background-image: -webkit-linear-gradient(bottom, rgb(201,201,201) 19%, rgb(235,235,235) 60%);
+	background-image: -ms-linear-gradient(bottom, rgb(201,201,201) 19%, rgb(235,235,235) 60%); 
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0.19, rgb(201,201,201)),
+		color-stop(0.6, rgb(235,235,235))
+	);
+}
+
+.oas_tendenz_trend_table{
+	background-color: #EEEEEE;
+}
+
+.oas_tendenz_trend_table a:link{
+	color:#333333;
+}
+
+.oas_tendenz_trend_table a:visited{
+	color:#333333;
+}
+
+.oas_tendenz_trend_table td th{
+	border: dotted 1px #333333;
+}
+
+.oas_tendenz_trend_table th{
+	border-bottom: dotted 1px #333333;
+	padding:5px;
+	font-size:15px;
+	text-align:left;
+}
+
+.oas_tendenz_even{
+	background:#F9F9F9;
+}
+
+.oas_tendenz_odd{
+	background:#DDDDDD;
+}
+
+.oas_tendenz_pfeil {background: url('Icons/oas_tendez_pfeil_sprite.png') no-repeat top left;}
+.sprite-eq{ background-position: 0 0; width: 29px; height: 29px; } 
+.sprite-gt{ background-position: 0 -34px; width: 29px; height: 29px; } 
+.sprite-lt{ background-position: 0 -68px; width: 29px; height: 29px; } 

@@ -1,0 +1,4 @@
+.oas_tendenz_pfeil {background: url('oas_tendez_pfeil_sprite.png') no-repeat top left;}
+.sprite-eq{ background-position: 0 0; width: 29px; height: 29px; } 
+.sprite-gt{ background-position: 0 -34px; width: 29px; height: 29px; } 
+.sprite-lt{ background-position: 0 -68px; width: 29px; height: 29px; } 

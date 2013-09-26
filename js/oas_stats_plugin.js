@@ -41,7 +41,7 @@ sprintf = function() {
 (function($){
 	var settings = {
     CSS: {},
-    CSS_TAB:{"border-style" : "solid","border-width" : "1px", "border-radius": "10px", "border-color":"#DDDDDD"},
+    CSS_TAB:{"border-style" : "solid","border-width" : "1px", "border-radius": "10px", "border-color":"#DDDDDD", "padding":"5px"},
     CSS_CLICKED:{"border":"solid 1px #DDDDDD", "border-bottom":"solid 1px #FFFFFF", "background-color":"#FFFFFF", "margin-left":"15px", "margin-bottom":"-1px", "padding":"7px", "border-top-left-radius": "10px","border-top-right-radius": "10px"},
     CSS_NOTCLICKED:{"border":"solid 1px #EEEEEE", "border-bottom":"none", "background-color":"#EEEEEE", "margin-left":"15px", "margin-bottom":"-1px", "padding":"7px", "border-top-left-radius": "10px","border-top-right-radius": "10px"},
     CSS_NOTCLICKED_HOVER:{"border":"solid 1px #DDDDDD", "border-bottom":"none", "background-color":"#EEEEEE", "margin-left":"15px", "margin-bottom":"-1px", "padding":"7px", "border-top-left-radius": "10px","border-top-right-radius": "10px"},
@@ -70,7 +70,8 @@ sprintf = function() {
     DOCUMENT_URL:'/frontdoor.php?source_opus={0}&la={1}',
     TENDENCE_URL:'/sulb/getTendenz.php?id={0}{1}&u={2}&n={3}',
     RELEVANCE_URL:'/sulb/getRelevantEntrys.php?id={0}&limit={1}',
-	CSS_URL:'/sulb/trend.css'
+	CSS_URL:'/sulb/trend.css',
+	CHART_OPTIONS:''
   };
   var dict = {
     "de":{"t":"Tendenz",
@@ -82,10 +83,12 @@ sprintf = function() {
         "y":"1 Jahr",
         
         "title":"Titel",
-        "rv":"Abrufhäufigkeit",
+        "rv":"relative Abrufhäufigkeit*",
+		"rvs":"*Durchschnittliche Zugriffe pro Tag",
         "tc1":"Tendenz",
         "tc2":"Diagramm",
-        "tc3":"Relevante Dokumente"},
+        "tc3":"Relevante Dokumente",
+		"footer":"Zugriffszahlen erhoben nach COUNTER-Standard"},
     "en":{"t":"Trend",
         "ti":"Time interval",
         "v":"Value",
@@ -96,9 +99,11 @@ sprintf = function() {
         
         "title":"Title",
         "rv":"Score",
+		"rvs":"*Durchschnittliche Zugriffe pro Tag",
         "tc1":"Trend",
         "tc2":"Chart",
-        "tc3":"Relevant documents"}
+        "tc3":"Relevant documents",
+		"footer":"Zugriffszahlen erhoben nach COUNTER-Standard"}
   };
   var months = {
     "de":["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
@@ -137,6 +142,7 @@ sprintf = function() {
 					container.insertAfter(this);
 					break;
 				};
+				
 				
 				//tab punkte
 				if(opt.TAB_CONTROL['trend']){
@@ -180,6 +186,7 @@ sprintf = function() {
 					tabcap1.hover(function(){if(!$("#tab1").is(":visible")){$(this).css(opt.CSS_NOTCLICKED_HOVER);}},function(){if(!$("#tab1").is(":visible")){$(this).css(opt.CSS_NOTCLICKED);}});
 					//methods.createTrendTable(tab1,opt);
 				}
+				
 				
 				if(opt.TAB_CONTROL['chart']){				
 					var tab2 = $('<div />').attr({
@@ -234,6 +241,7 @@ sprintf = function() {
 					div.css(opt.CSS);
 				}
 				container.wrap(div);
+				
 		},
 		/*diese Funktion wird für den ersten automatischen klick von tab1cap genutzt und sollte eigentlich auch mit hilfe von bind für die click events genutzt werden. Funktioniert aber nicht.
 		click: function(elem,list,opt){
@@ -323,11 +331,11 @@ sprintf = function() {
 					
 					if(month<=(m+1)){//mit aktuellem Monat
 						values[opt.CHART_MONTH_CONTROL-1-m+month-1] = values[opt.CHART_MONTH_CONTROL-1-m+month-1]+parseInt(value.counter);
-						values[opt.CHART_MONTH_CONTROL-1-m+month-1] = values[opt.CHART_MONTH_CONTROL-1-m+month-1]+parseInt(value.counter_abstract);
+						//values[opt.CHART_MONTH_CONTROL-1-m+month-1] = values[opt.CHART_MONTH_CONTROL-1-m+month-1]+parseInt(value.counter_abstract);
 					}
 					else{
 						values[opt.CHART_MONTH_CONTROL-1-m+month-12-1] = values[opt.CHART_MONTH_CONTROL-1-m+month-12-1]+parseInt(value.counter,10);
-						values[opt.CHART_MONTH_CONTROL-1-m+month-12-1] = values[opt.CHART_MONTH_CONTROL-1-m+month-12-1]+parseInt(value.counter_abstract,10);
+						//values[opt.CHART_MONTH_CONTROL-1-m+month-12-1] = values[opt.CHART_MONTH_CONTROL-1-m+month-12-1]+parseInt(value.counter_abstract,10);
 					}
 				});	
 				if(debug)console.log(values);
@@ -368,7 +376,37 @@ sprintf = function() {
 					}
 				]
 			}
-			var myNewChart = new Chart(ctx).Line(data);
+			
+			var max = Math.max.apply(Math, values);
+			var options = {};
+			if(debug) console.log(max);
+			
+			if(max <= 10){
+				options = {"scaleOverride":true, "scaleSteps":10, "scaleStepWidth":1};
+			}
+			else
+			if(max <= 20){
+				options = {"scaleOverride":true, "scaleSteps":10, "scaleStepWidth":2};
+			}
+			else{
+				options = {"scaleLabel" : "<%=Math.round(value,0)%>"};
+			}
+			
+			if(opt.CHART_OPTIONS != ""){
+				if(opt.CHART_OPTIONS != "NONE")
+					var myNewChart = new Chart(ctx).Line(data);
+				else
+					var myNewChart = new Chart(ctx).Line(data,opt.CHART_OPTIONS);
+			}
+			else
+				var myNewChart = new Chart(ctx).Line(data,options);
+			
+			//footer
+			var footer = $('<div />').attr({
+				class:"oas_tendenz_footer"
+			});
+			footer.append(dict[opt.LANG].footer);
+			footer.appendTo(container);
 		},
 		
 		createTrendTable: function(elem,opt){
@@ -421,25 +459,25 @@ sprintf = function() {
 					var day = parseInt(key.substr(8,10),10);
 					if(day != d && month ==(m+1)){
 						valuesD[d-day-1] = valuesD[d-day-1]+parseInt(value.counter);
-						valuesD[d-day-1] = valuesD[d-day-1]+parseInt(value.counter_abstract);
+						//valuesD[d-day-1] = valuesD[d-day-1]+parseInt(value.counter_abstract);
 					}
 					else if(month==m){
 						if(month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12){
 							valuesD[31+d-day-1] = valuesD[31+d-day-1]+parseInt(value.counter);
-							valuesD[31+d-day-1] = valuesD[31+d-day-1]+parseInt(value.counter_abstract);
+							//valuesD[31+d-day-1] = valuesD[31+d-day-1]+parseInt(value.counter_abstract);
 						}
 						else if(month == 4 || month == 6 ||month == 9 ||month == 11){
 							valuesD[30+d-day-1] = valuesD[30+d-day-1]+parseInt(value.counter);
-							valuesD[30+d-day-1] = valuesD[30+d-day-1]+parseInt(value.counter_abstract);
+							//valuesD[30+d-day-1] = valuesD[30+d-day-1]+parseInt(value.counter_abstract);
 						}
 						else if(month == 2){
 							if((Jahr % 4 == 0)&&(Jahr % 100 != 0)||(Jahr % 400 == 0)){
 								valuesD[29+d-day-1] = valuesD[29+d-day-1]+parseInt(value.counter);
-								valuesD[29+d-day-1] = valuesD[29+d-day-1]+parseInt(value.counter_abstract);
+								//valuesD[29+d-day-1] = valuesD[29+d-day-1]+parseInt(value.counter_abstract);
 							}
 							else{
 								valuesD[28+d-day-1] = valuesD[28+d-day-1]+parseInt(value.counter);
-								valuesD[28+d-day-1] = valuesD[28+d-day-1]+parseInt(value.counter_abstract);
+								//valuesD[28+d-day-1] = valuesD[28+d-day-1]+parseInt(value.counter_abstract);
 							}
 						}
 					}
@@ -465,38 +503,38 @@ sprintf = function() {
 					var day = parseInt(key.substr(8,10),10);
 					if(day != d && month ==(m+1)){
 						valuesM[d-day-1] = valuesM[d-day-1]+parseInt(value.counter);
-						valuesM[d-day-1] = valuesM[d-day-1]+parseInt(value.counter_abstract);
+						//valuesM[d-day-1] = valuesM[d-day-1]+parseInt(value.counter_abstract);
 					}
 					else if(month==m){
 						if(month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12){
 							valuesM[31+d-day-1] = valuesM[31+d-day-1]+parseInt(value.counter);
-							valuesM[31+d-day-1] = valuesM[31+d-day-1]+parseInt(value.counter_abstract);
+							//valuesM[31+d-day-1] = valuesM[31+d-day-1]+parseInt(value.counter_abstract);
 						}
 						else if(month == 4 || month == 6 ||month == 9 ||month == 11){
 							valuesM[30+d-day-1] = valuesM[30+d-day-1]+parseInt(value.counter);
-							valuesM[30+d-day-1] = valuesM[30+d-day-1]+parseInt(value.counter_abstract);
+							//valuesM[30+d-day-1] = valuesM[30+d-day-1]+parseInt(value.counter_abstract);
 						}
 						else if(month == 2){
 							if((Jahr % 4 == 0)&&(Jahr % 100 != 0)||(Jahr % 400 == 0)){
 								valuesM[29+d-day-1] = valuesM[29+d-day-1]+parseInt(value.counter);
-								valuesM[29+d-day-1] = valuesM[29+d-day-1]+parseInt(value.counter_abstract);
+								//valuesM[29+d-day-1] = valuesM[29+d-day-1]+parseInt(value.counter_abstract);
 								//hier muss noch irgendwas hin für den fall 1.3-3.3 da dann werte ausm januar genommen werden müssen ... siehe stat_plug_infos.txt ganz unten
 								//[31+29+d-day-1]
 								//gelöst unten else if month == m-1
 							}
 							else{
 								valuesM[28+d-day-1] = valuesM[28+d-day-1]+parseInt(value.counter);
-								valuesM[28+d-day-1] = valuesM[28+d-day-1]+parseInt(value.counter_abstract);
+								//valuesM[28+d-day-1] = valuesM[28+d-day-1]+parseInt(value.counter_abstract);
 							}
 						}
 					}else if((month == 1)&&(month ==(m-1))){
 						if((Jahr % 4 == 0)&&(Jahr % 100 != 0)||(Jahr % 400 == 0)){
 							valuesM[31+29+d-day-1] = valuesM[31+29+d-day-1]+parseInt(value.counter);
-							valuesM[31+29+d-day-1] = valuesM[31+29+d-day-1]+parseInt(value.counter_abstract);
+							//valuesM[31+29+d-day-1] = valuesM[31+29+d-day-1]+parseInt(value.counter_abstract);
 						}
 						else{
 							valuesM[31+28+d-day-1] = valuesM[31+28+d-day-1]+parseInt(value.counter);
-							valuesM[31+28+d-day-1] = valuesM[31+28+d-day-1]+parseInt(value.counter_abstract);
+							//valuesM[31+28+d-day-1] = valuesM[31+28+d-day-1]+parseInt(value.counter_abstract);
 						}
 					}
 					
@@ -513,18 +551,18 @@ sprintf = function() {
 				values4M[i] = 0;
 			}
 			$.ajaxSetup({'async': false});
-			$.getJSON(methods.getTendenceUrl('month',opt.ID_PREFIX,opt.ID,5,opt), function(data){//mit aktuellem Monat
+			$.getJSON(methods.getTendenceUrl('month',opt.ID_PREFIX,opt.ID,4,opt), function(data){//mit aktuellem Monat
 				$.each(data.data, function(key, value){
 					var month = parseInt(key.substr(5,7),10);
 					//ohne aktuellen Monat
 					if(month == (m+1)){} //der aktuelle Monat soll nicht angezeigt werden
 					else if(month<=m){
 						values4M[m-month] = values4M[m-month]+parseInt(value.counter);
-						values4M[m-month] = values4M[m-month]+parseInt(value.counter_abstract);
+						//values4M[m-month] = values4M[m-month]+parseInt(value.counter_abstract);
 					}
 					else{
 						values4M[12-month+m] = values4M[12-month+m]+parseInt(value.counter,10);
-						values4M[12-month+m] = values4M[12-month+m]+parseInt(value.counter_abstract,10);
+						//values4M[12-month+m] = values4M[12-month+m]+parseInt(value.counter_abstract,10);
 					}
 				});	
 				if(debug)console.log(values4M);
@@ -545,11 +583,11 @@ sprintf = function() {
 					if(month == (m+1)){} //der aktuelle Monat soll nicht angezeigt werden
 					else if(month<=m){
 						valuesY[m-month] = valuesY[m-month]+parseInt(value.counter);
-						valuesY[m-month] = valuesY[m-month]+parseInt(value.counter_abstract);
+						//valuesY[m-month] = valuesY[m-month]+parseInt(value.counter_abstract);
 					}
 					else{
 						valuesY[12-month+m] = valuesY[12-month+m]+parseInt(value.counter,10);
-						valuesY[12-month+m] = valuesY[12-month+m]+parseInt(value.counter_abstract,10);
+						//valuesY[12-month+m] = valuesY[12-month+m]+parseInt(value.counter_abstract,10);
 					}
 				});	
 				if(debug)console.log(valuesY);
@@ -591,6 +629,13 @@ sprintf = function() {
 			if(evenVSodd == "oas_tendenz_even") evenVSodd = "oas_tendenz_odd"; else evenVSodd = "oas_tendenz_even";
 		}	
 			//$("#trend_table tbody tr td").css(opt.CSS_TRENDTABLE);
+			
+		//footer
+			var footer = $('<div />').attr({
+				class:"oas_tendenz_footer"
+			});
+			footer.append(dict[opt.LANG].footer);
+			footer.appendTo(container);
 	
 		},
 		
@@ -639,7 +684,7 @@ sprintf = function() {
 					var request_counter = 0;
 					$.getJSON(methods.getTendenceUrl('day',opt.ID_PREFIX,value.id,diff,opt), function(data){//mit aktuellem Monat
 						$.each(data.data, function(key, value2){
-							request_counter += parseInt(value2.counter_abstract,10);
+							//request_counter += parseInt(value2.counter_abstract,10);
 							request_counter += parseInt(value2.counter,10);
 						});	
 					});
@@ -653,7 +698,16 @@ sprintf = function() {
 			});
 			
 			//container.append("testtest");
-			
+			var annotation = $('<div />').attr({
+				class:"oas_tendenz_footer"
+			})
+			annotation.append(dict[opt.LANG].rvs);
+			//footer
+			var footer = $('<div />').attr({
+				class:"oas_tendenz_footer"
+			});
+			footer.append(dict[opt.LANG].rvs+"<br>"+dict[opt.LANG].footer);
+			footer.appendTo(container);
 		},
 		
 		getAverage: function(arr){

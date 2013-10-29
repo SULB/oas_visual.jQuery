@@ -84,7 +84,8 @@ sprintf = function() {
         
         "title":"Titel",
         "rv":"relative Abrufhäufigkeit*",
-		"rvs":"*Durchschnittliche Zugriffe pro Tag",
+		"rvs":"*Durchschnittliche Zugriffe pro Tag multipliziert mit 100",
+		"sms":"Summe der Zugriffe pro Monat",
         "tc1":"Tendenz",
         "tc2":"Diagramm",
         "tc3":"Relevante Dokumente",
@@ -99,7 +100,8 @@ sprintf = function() {
         
         "title":"Title",
         "rv":"Score",
-		"rvs":"*Durchschnittliche Zugriffe pro Tag",
+		"rvs":"*Durchschnittliche Zugriffe pro Tag multipliziert mit 100",
+		"sms":"Summe der Zugriffe pro Monat",
         "tc1":"Trend",
         "tc2":"Chart",
         "tc3":"Relevant documents",
@@ -405,7 +407,7 @@ sprintf = function() {
 			var footer = $('<div />').attr({
 				class:"oas_tendenz_footer"
 			});
-			footer.append(dict[opt.LANG].footer);
+			footer.append(dict[opt.LANG].sms+"<br>"+dict[opt.LANG].footer);
 			footer.appendTo(container);
 		},
 		
@@ -688,6 +690,7 @@ sprintf = function() {
 							request_counter += parseInt(value2.counter,10);
 						});	
 					});
+					if(debug)console.log(request_counter);
 					var scoreraw = (request_counter/diff)*100;
 					var scorerawmodulo = (scoreraw*100) % 100;
 					var score = (((scoreraw*100)-scorerawmodulo)/100) + "," + scorerawmodulo.toFixed(0);

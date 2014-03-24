@@ -500,7 +500,7 @@ sprintf = function() {
 			$.getJSON(methods.getTendenceUrl('day',opt.ID_PREFIX,opt.ID,30,opt), function(data){
 				//value enthält das aktuellste Datum ganz vorne[0]
 				$.each(data.data, function(key, value){
-					//var month = parseInt(key.substr(0,4),10);
+					var Jahr = parseInt(key.substr(0,4),10);
 					var month = parseInt(key.substr(5,7),10);
 					var day = parseInt(key.substr(8,10),10);
 					if(day != d && month ==(m+1)){

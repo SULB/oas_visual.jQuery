@@ -89,7 +89,7 @@ sprintf = function() {
         "tc1":"Tendenz",
         "tc2":"Diagramm",
         "tc3":"Relevante Dokumente",
-		"footer":"Zugriffszahlen erhoben nach COUNTER-Standard"},
+		"footer":"Zugriffszahlen erhoben nach COUNTER-Standard</br><a href='https://www.gbv.de/Verbundzentrale/serviceangebote/oas-service/pdf/lizenz_kurzfassung' target='_blank'>Lizenz</a>"},
     "en":{"t":"Trend",
         "ti":"Time interval",
         "v":"Value",
@@ -105,7 +105,7 @@ sprintf = function() {
         "tc1":"Trend",
         "tc2":"Chart",
         "tc3":"Relevant documents",
-		"footer":"Zugriffszahlen erhoben nach COUNTER-Standard"}
+		"footer":"Zugriffszahlen erhoben nach COUNTER-Standard</br><a href='https://www.gbv.de/Verbundzentrale/serviceangebote/oas-service/pdf/lizenz_kurzfassung' target='_blank'>license</a>"}
   };
   var months = {
     "de":["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
